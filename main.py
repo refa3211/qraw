@@ -1,6 +1,7 @@
 import flet as ft
 import qrcode
 import phototoclipboard
+import tempfile
 
 
 def main(page: ft.Page):
@@ -10,7 +11,21 @@ def main(page: ft.Page):
     page.window_width = 530
     page.scroll = True
 
+
     def createqr(e):
+        lastqr = []
+
+        def tempofile(username):
+
+            tempo = tempfile.TemporaryFile(delete=False, suffix='.png', prefix=f"qr-code-{username.value}_")
+            lastqr.append(tempo.name)
+            print(lastqr[-1])
+
+            # return tempo
+        tempofile(username=username)
+
+
+
         def copyurl(e):
             page.snack_bar = ft.SnackBar(ft.Text("copied URL",
                                                  text_align=ft.TextAlign.CENTER))
@@ -20,7 +35,7 @@ def main(page: ft.Page):
             page.update()
 
         def copyqr(e):
-            phototoclipboard.getphoto(f"./images/qr-{username.value}.png")
+            phototoclipboard.getphoto(lastqr[-1])
             page.snack_bar = ft.SnackBar(ft.Text("copied QR code",
                                                  text_align=ft.TextAlign.CENTER))
             page.snack_bar.open = True
@@ -28,13 +43,14 @@ def main(page: ft.Page):
             page.update()
 
 
+
         link: str = f"https://getwsone.com/?serverurl=mohconsole.health.gov.il&gid=MOH&un={username.value}"
-        qr = qrcode.make(link).save(f"./images/qr-{username.value}.png")
+        qr = qrcode.make(link).save(lastqr[-1])
 
         page.add(
             ft.Row([
                 ft.Container(
-                    ft.Image(src=f"./images/qr-{username.value}.png"),
+                    ft.Image(src=lastqr[-1]),
                     ink=True,
                     on_click=copyqr, alignment=ft.alignment.center)],alignment=ft.alignment.center))
 
