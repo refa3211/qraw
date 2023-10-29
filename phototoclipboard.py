@@ -15,7 +15,6 @@ def getphoto(photopath):
     output = BytesIO()
     image.convert("RGB").save(output, "BMP")
     data = output.getvalue()[14:]
-    print(data)
     output.close()
     send_to_clipboard(win32clipboard.CF_DIB, data)
 
