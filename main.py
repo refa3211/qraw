@@ -11,20 +11,17 @@ def main(page: ft.Page):
     page.window_width = 530
     page.scroll = True
 
+    page.update()
 
     def createqr(e):
         lastqr = []
 
         def tempofile(username):
-
-            tempo = tempfile.TemporaryFile(delete=False, suffix='.png', prefix=f"qr-code-{username.value}_")
+            tempo = tempfile.TemporaryFile(delete=False, suffix='.png',
+                                           prefix=f"qr-code-{username.value}_")
             lastqr.append(tempo.name)
-            print(lastqr[-1])
 
-            # return tempo
         tempofile(username=username)
-
-
 
         def copyurl(e):
             page.snack_bar = ft.SnackBar(ft.Text("copied URL",
@@ -42,39 +39,42 @@ def main(page: ft.Page):
             page.snack_bar.duration = 2000
             page.update()
 
-
-
         link: str = f"https://getwsone.com/?serverurl=mohconsole.health.gov.il&gid=MOH&un={username.value}"
         qr = qrcode.make(link).save(lastqr[-1])
 
-        page.add(
+        page.add(ft.Row([ft.Text(f"username: {username.value}", size=25)], alignment=ft.MainAxisAlignment.CENTER),
             ft.Row([
                 ft.Container(
                     ft.Image(src=lastqr[-1]),
                     ink=True,
-                    on_click=copyqr, alignment=ft.alignment.center)],alignment=ft.alignment.center))
+                    on_click=copyqr, alignment=ft.alignment.center)],
+                alignment=ft.alignment.center))
 
         page.add(ft.Row(
-            [
-                ft.ElevatedButton('Copy QR', on_click=copyqr),
-                ft.IconButton(ft.icons.COPY, on_click=copyurl)
-            ]
-            ))
+            [ft.ElevatedButton('Copy QR', on_click=copyqr),
+             ft.IconButton(ft.icons.COPY, on_click=copyurl)]))
+
+
+
+    def getdata():
+        username = ft.TextField(label='UserName', on_submit=createqr,
+                                text_align=ft.TextAlign.LEFT, width=320)
+        qricon = ft.IconButton(ft.icons.QR_CODE, icon_size=40,
+                               on_click=createqr)
+
+        page.add(ft.Row([username, qricon],
+                        alignment=ft.MainAxisAlignment.CENTER))
+
+        # page.clean()
         page.update()
 
-    username = ft.TextField(label='UserName', on_submit=createqr,
-                            text_align=ft.TextAlign.LEFT, width=320)
+        return username
 
+    page.update()
 
-    page.add(
-        ft.Row(
-            [
-                username, ft.IconButton(ft.icons.QR_CODE, icon_size=40,
-                                        on_click=createqr)
-            ],
-            alignment=ft.MainAxisAlignment.CENTER,
-        )
-    )
+    username = getdata()
+    # page.views.clear()
+    # page.update()
 
 
 ft.app(main)
