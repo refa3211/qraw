@@ -2,13 +2,15 @@ import flet as ft
 import qrcode
 import phototoclipboard
 import tempfile
+import qrlogo
 
 
 def main(page: ft.Page):
     page.title = "QR Generator"
     page.theme_mode = 'light'
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
-    page.window_width = 530
+    page.window_width = 600
+    page.window_height = 850
     page.scroll = True
 
     page.update()
@@ -40,7 +42,11 @@ def main(page: ft.Page):
             page.update()
 
         link: str = f"https://getwsone.com/?serverurl=mohconsole.health.gov.il&gid=MOH&un={username.value}"
-        qr = qrcode.make(link).save(lastqr[-1])
+        # qr = qrcode.make(link).save(lastqr[-1])
+        qrlogo.qrlogo(username=username.value, savefile=lastqr[-1])
+
+
+
 
         page.add(ft.Row([ft.Text(f"username: {username.value}", size=25)], alignment=ft.MainAxisAlignment.CENTER),
             ft.Row([
