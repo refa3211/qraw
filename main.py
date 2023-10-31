@@ -9,8 +9,8 @@ def main(page: ft.Page):
     page.title = "QR Generator"
     page.theme_mode = 'light'
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
-    page.window_width = 600
-    page.window_height = 850
+    page.window_width = 500
+    page.window_height = 770
     page.scroll = True
 
     page.update()
@@ -45,22 +45,21 @@ def main(page: ft.Page):
         # qr = qrcode.make(link).save(lastqr[-1])
         qrlogo.qrlogo(username=username.value, savefile=lastqr[-1])
 
+        qrimage = ft.Container(content=ft.Image(src=lastqr[-1]),
+                               ink=True,
+                               height=450,
+                               width=450,
+                               on_click=copyqr,
+                               padding=5,
+                               )
+        textusername = ft.Text(f"username: {username.value}", size=25)
+        copybtnqr = ft.ElevatedButton('Copy QR', on_click=copyqr)
+        icnbtn = ft.IconButton(ft.icons.COPY, on_click=copyurl)
 
-
-
-        page.add(ft.Row([ft.Text(f"username: {username.value}", size=25)], alignment=ft.MainAxisAlignment.CENTER),
-            ft.Row([
-                ft.Container(
-                    ft.Image(src=lastqr[-1]),
-                    ink=True,
-                    on_click=copyqr, alignment=ft.alignment.center)],
-                alignment=ft.alignment.center))
-
-        page.add(ft.Row(
-            [ft.ElevatedButton('Copy QR', on_click=copyqr),
-             ft.IconButton(ft.icons.COPY, on_click=copyurl)]))
-
-
+        page.add(ft.Row([textusername], alignment=ft.MainAxisAlignment.CENTER),
+                 ft.Row([qrimage], alignment=ft.MainAxisAlignment.CENTER),
+                 ft.Row([icnbtn, copybtnqr])
+                 )
 
     def getdata():
         username = ft.TextField(label='UserName', on_submit=createqr,
